@@ -9,7 +9,8 @@
   <style>
     body { background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     .card { border-radius: 12px; border: none; }
-    .badge-code { font-size: 0.9em; padding: 4px 8px; border-radius: 4px; }
+    .box-riasec { border: 1px solid #0d6efd; background-color: #f0f7ff; border-radius: 8px; padding: 15px; }
+    .box-vak { border: 1px solid #198754; background-color: #f0fff4; border-radius: 8px; padding: 15px; }
     @media print {
       .no-print { display: none !important; }
       body { background-color: #fff; }
@@ -40,16 +41,6 @@
     <button class="btn btn-primary mt-4 w-100" onclick="mulaiTes()"><i class="bi bi-play-circle"></i> Mulai Tes</button>
   </div>
 
-  <!-- CONTAINER TES -->
-  <div id="sec-tes" class="card shadow-sm p-4 mb-4 d-none">
-    <h4 class="text-primary mb-3" id="tes-title">Instrumen Tes</h4>
-    <div id="question-container"></div>
-    <div class="d-flex justify-content-between mt-4">
-      <button id="btnPrev" class="btn btn-outline-secondary" onclick="prevQ()" disabled>Kembali</button>
-      <button id="btnNext" class="btn btn-primary" onclick="nextQ()">Lanjut</button>
-    </div>
-  </div>
-
   <!-- HALAMAN HASIL LAPORAN -->
   <div id="sec-hasil" class="card shadow-sm p-4 mb-4 d-none">
     <div class="text-center mb-4">
@@ -59,9 +50,9 @@
     </div>
 
     <!-- Ringkasan Identitas -->
-    <table class="table table-bordered align-middle">
+    <table class="table table-bordered align-middle mb-4">
       <tr>
-        <th width="30%">Nama Siswa</th>
+        <th width="35%">Nama Siswa</th>
         <td id="res-nama" class="fw-bold"></td>
       </tr>
       <tr>
@@ -82,16 +73,28 @@
     <div class="row g-3 mb-4">
       <div class="col-md-6">
         <div class="p-3 border rounded bg-light">
-          <h6>Skor Dimensi RIASEC</h6>
-          <div id="skor-riasec-detail" class="small"></div>
+          <h6 class="fw-bold">Skor Dimensi RIASEC</h6>
+          <div id="skor-riasec-detail" class="small text-muted"></div>
         </div>
       </div>
       <div class="col-md-6">
         <div class="p-3 border rounded bg-light">
-          <h6>Skor Dimensi VAK</h6>
-          <div id="skor-vak-detail" class="small"></div>
+          <h6 class="fw-bold">Skor Dimensi VAK</h6>
+          <div id="skor-vak-detail" class="small text-muted"></div>
         </div>
       </div>
+    </div>
+
+    <!-- Deskripsi & Rekomendasi Karir (RIASEC) -->
+    <div class="box-riasec mb-3">
+      <h6 class="text-primary fw-bold"><i class="bi bi-briefcase"></i> Rekomendasi Karir & Pekerjaan (RIASEC):</h6>
+      <div id="detail-riasec-text"></div>
+    </div>
+
+    <!-- Deskripsi & Panduan Strategi Belajar (VAK) -->
+    <div class="box-vak mb-4">
+      <h6 class="text-success fw-bold"><i class="bi bi-journal-check"></i> Panduan Strategi Belajar (VAK):</h6>
+      <div id="detail-vak-text"></div>
     </div>
 
     <!-- TOMBOL AKSI -->
@@ -113,12 +116,26 @@
 
 <script>
   // GANTI DENGAN URL WEB APP GOOGLE APPS SCRIPT KAMU
-  const API_URL = "https://script.google.com/macros/s/AKfycbzxR8_QCBaRftEVKx6R3c4jeHDWPahkgp4ErD9hLpDE3SSDjmlFq2nN7q1sWUVZyhxvmQ/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbxIrp8cx1yPZHLdlO5IcFrRmpfDQwmnpTUywK5KkHyx5Js-MjPd2m91RkDJ-EyVHSAmLA/exec";
+
+  const MAP_RIASEC = {
+    'R': { nama: 'Realistic (Praktis & Fisik)', deskripsi: 'Menyukai kegiatan praktis, merakit, memperbaiki mesin/alat, serta bekerja di luar ruangan.', karir: 'Teknisi/Mekanik, Insinyur Sipil, Arsitek, Pilot, Koki/Chef, Ahli Otomotif.' },
+    'I': { nama: 'Investigative (Analitis & Ilmiah)', deskripsi: 'Suka menganalisis data, memecahkan masalah kompleks, berpikir logis, dan melakukan penelitian.', karir: 'Ilmuwan, Analis Data, Programer/Developer, Dokter, Peneliti, Ahli Matematika.' },
+    'A': { nama: 'Artistic (Kreatif & Ekspresif)', deskripsi: 'Menyukai ekspresi diri, seni, desain, musik, penulisan, dan hal-hal yang membutuhkan imajinasi tinggi.', karir: 'Desainer Grafis, Penulis, Animator, Fotografer, Musisi, Arsitek Interior.' },
+    'S': { nama: 'Social (Penolong & Edukatif)', deskripsi: 'Suka membantu, mengajar, melatih, merawat, dan berinteraksi langsung dengan orang lain.', karir: 'Guru/Pendidik, Konselor/Psikolog, Perawat, Pekerja Sosial, HRD, Customer Service.' },
+    'E': { nama: 'Enterprising (Kepemimpinan & Bisnis)', deskripsi: 'Menyukai kegiatan memimpin, mempengaruhi, menjual produk, dan berorientasi pada target bisnis.', karir: 'Wirausahawan, Manajer Pemasaran, Event Organizer, Project Manager, Pengacara, Sales.' },
+    'C': { nama: 'Conventional (Terstruktur & Rapi)', deskripsi: 'Menyukai pekerjaan dengan aturan jelas, pengorganisasian data, administrasi, dan pembukuan.', karir: 'Akuntan, Staf Administrasi, Kasir, Secretarial, Data Entry, Bankir.' }
+  };
+
+  const MAP_VAK = {
+    'V': { nama: 'Tipe Visual (Penglihatan)', deskripsi: 'Kamu belajar paling efektif melalui visual, gambar, warna, grafik, dan catatan terstruktur.', strategi: '• Gunakan garis bawah/stabilo warna-warni saat membaca.<br>• Buat peta konsep (mind mapping) atau diagram.<br>• Catat poin-poin penting dalam bentuk poin/tabel.' },
+    'A': { nama: 'Tipe Auditori (Pendengaran)', deskripsi: 'Kamu belajar paling efektif melalui penjelasan lisan, diskusi, mendengarkan, dan membaca nyaring.', strategi: '• Dengarkan penjelasan guru dengan seksama/rekam penjelasan.<br>• Baca materi dengan suara teratur (membaca nyaring).<br>• Belajar kelompok dan lakukan diskusi interaktif.' },
+    'K': { nama: 'Tipe Kinestetik (Gerakan & Praktik)', deskripsi: 'Kamu belajar paling efektif melalui gerakan tubuh, sentuhan, simulasi, dan praktik langsung.', strategi: '• Belajar/menghafal sambil berjalan atau bergerak.<br>• Tulis ulang ringkasan materi di kertas buram.<br>• Gunakan alat peraga nyata, objek 3D, atau langsung lakukan praktik.' }
+  };
 
   let state = { nama: '', kelas: '' };
   let hasilGlobal = null;
 
-  // Inisialisasi awal
   window.onload = function() {
     fetch(API_URL + '?action=getKelas')
       .then(r => r.json())
@@ -154,7 +171,7 @@
       return;
     }
 
-    // Contoh data hasil simulasikan (Integrasikan dengan logika perhitungan tes kamu)
+    // Simulasi hasil tes (Integrasikan variabel skor dengan perhitungan instrumen kamu)
     hasilGlobal = {
       action: 'savePdfDrive',
       nama: state.nama,
@@ -177,15 +194,31 @@
     document.getElementById('res-riasec').innerText = hasilGlobal.kodeDominanRIASEC;
     document.getElementById('res-vak').innerText = hasilGlobal.kodeDominanVAK;
 
-    // Render detail skor
     document.getElementById('skor-riasec-detail').innerHTML = 
       `R: ${hasilGlobal.skorRIASEC.R} | I: ${hasilGlobal.skorRIASEC.I} | A: ${hasilGlobal.skorRIASEC.A} | ` +
       `S: ${hasilGlobal.skorRIASEC.S} | E: ${hasilGlobal.skorRIASEC.E} | C: ${hasilGlobal.skorRIASEC.C}`;
 
     document.getElementById('skor-vak-detail').innerHTML = 
       `Visual: ${hasilGlobal.skorVAK.V} | Auditori: ${hasilGlobal.skorVAK.A} | Kinestetik: ${hasilGlobal.skorVAK.K}`;
+
+    // Render Deskripsi RIASEC & VAK
+    const kR = hasilGlobal.kodeDominanRIASEC.split('-')[0].trim();
+    const infoR = MAP_RIASEC[kR] || MAP_RIASEC['R'];
+    document.getElementById('detail-riasec-text').innerHTML = `
+      <p class="mb-1"><b>${infoR.nama}</b></p>
+      <p class="small text-muted mb-2">${infoR.deskripsi}</p>
+      <p class="small mb-0"><b>Contoh Karir:</b> ${infoR.karir}</p>
+    `;
+
+    const kV = hasilGlobal.kodeDominanVAK.trim();
+    const infoV = MAP_VAK[kV] || MAP_VAK['V'];
+    document.getElementById('detail-vak-text').innerHTML = `
+      <p class="mb-1"><b>${infoV.nama}</b></p>
+      <p class="small text-muted mb-2">${infoV.deskripsi}</p>
+      <p class="small mb-0"><b>Strategi Belajar Terbaik:</b><br>${infoV.strategi}</p>
+    `;
     
-    // Kirim data mentah ke Google Sheets secara background saat hasil muncul
+    // Simpan otomatis data mentah ke Google Sheets
     fetch(API_URL, {
       method: 'POST',
       body: JSON.stringify({
