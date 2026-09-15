@@ -11,6 +11,7 @@
     .card { border-radius: 12px; border: none; }
     .box-riasec { border: 1px solid #0d6efd; background-color: #f0f7ff; border-radius: 8px; padding: 15px; }
     .box-vak { border: 1px solid #198754; background-color: #f0fff4; border-radius: 8px; padding: 15px; }
+    .q-item { background-color: #ffffff; border: 1px solid #e9ecef; border-radius: 8px; padding: 12px 15px; margin-bottom: 12px; }
     @media print {
       .no-print { display: none !important; }
       body { background-color: #fff; }
@@ -21,27 +22,147 @@
 <body class="py-4">
 
 <div class="container" style="max-width: 850px;">
-  <!-- FORM IDENTITAS SISWA -->
+
+  <!-- STEP 1: FORM IDENTITAS SISWA -->
   <div id="sec-identitas" class="card shadow-sm p-4 mb-4">
     <h4 class="text-primary mb-3"><i class="bi bi-person-vcard"></i> Identitas Siswa</h4>
     <div class="row g-3">
       <div class="col-md-6">
-        <label class="form-label font-weight-bold">Pilih Kelas</label>
+        <label class="form-label fw-bold">Pilih Kelas</label>
         <select id="selKelas" class="form-select" onchange="loadSiswa(this.value)">
           <option value="">-- Memuat Kelas... --</option>
         </select>
       </div>
       <div class="col-md-6">
-        <label class="form-label font-weight-bold">Pilih Nama Siswa</label>
+        <label class="form-label fw-bold">Pilih Nama Siswa</label>
         <select id="selSiswa" class="form-select" disabled>
           <option value="">-- Pilih Kelas Terlebih Dahulu --</option>
         </select>
       </div>
     </div>
-    <button class="btn btn-primary mt-4 w-100" onclick="mulaiTes()"><i class="bi bi-play-circle"></i> Mulai Tes</button>
+    <button class="btn btn-primary mt-4 w-100 py-2 fw-bold" onclick="mulaiTes()">
+      <i class="bi bi-play-circle"></i> Mulai Tes
+    </button>
   </div>
 
-  <!-- HALAMAN HASIL LAPORAN -->
+  <!-- STEP 2: LEMBAR SOAL TES -->
+  <div id="sec-soal" class="card shadow-sm p-4 mb-4 d-none">
+    <h4 class="text-primary mb-2"><i class="bi bi-file-earmark-text"></i> Lembar Tes Minat & Gaya Belajar</h4>
+    <p class="text-muted small mb-4">Pilihlah jawaban yang paling menggambarkan kondisi dan kebiasaan dirimu yang sebenarnya.</p>
+
+    <form id="formSoal">
+      <!-- A. SOAL RIASEC -->
+      <h5 class="fw-bold text-primary border-bottom pb-2 mb-3">A. Tes Minat Bakat (RIASEC)</h5>
+      
+      <div class="q-item">
+        <p class="mb-2 fw-semibold">1. Saya suka merakit, memperbaiki mesin, alat elektronik, atau bekerja dengan benda fisik.</p>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="q_r1" value="R" required> <label class="form-check-label">Ya</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="q_r1" value="0"> <label class="form-check-label">Tidak</label>
+        </div>
+      </div>
+
+      <div class="q-item">
+        <p class="mb-2 fw-semibold">2. Saya suka menganalisis data, memecahkan rumus/teka-teki, dan melakukan eksperimen ilmiah.</p>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="q_r2" value="I" required> <label class="form-check-label">Ya</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="q_r2" value="0"> <label class="form-check-label">Tidak</label>
+        </div>
+      </div>
+
+      <div class="q-item">
+        <p class="mb-2 fw-semibold">3. Saya suka mengekspresikan diri melalui seni, musik, menulis cerita, atau merancang desain kreatif.</p>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="q_r3" value="A" required> <label class="form-check-label">Ya</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="q_r3" value="0"> <label class="form-check-label">Tidak</label>
+        </div>
+      </div>
+
+      <div class="q-item">
+        <p class="mb-2 fw-semibold">4. Saya suka membantu orang lain, mengajar, mendengarkan curhat teman, atau melakukan kegiatan sosial.</p>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="q_r4" value="S" required> <label class="form-check-label">Ya</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="q_r4" value="0"> <label class="form-check-label">Tidak</label>
+        </div>
+      </div>
+
+      <div class="q-item">
+        <p class="mb-2 fw-semibold">5. Saya suka memimpin kelompok, membujuk orang lain, berbisnis, atau mengorganisir suatu acara.</p>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="q_r5" value="E" required> <label class="form-check-label">Ya</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="q_r5" value="0"> <label class="form-check-label">Tidak</label>
+        </div>
+      </div>
+
+      <div class="q-item">
+        <p class="mb-2 fw-semibold">6. Saya menyukai pekerjaan yang rapi, teratur, mengikuti petunjuk jelas, dan mengelola dokumen/data.</p>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="q_r6" value="C" required> <label class="form-check-label">Ya</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="q_r6" value="0"> <label class="form-check-label">Tidak</label>
+        </div>
+      </div>
+
+      <!-- B. SOAL VAK -->
+      <h5 class="fw-bold text-success border-bottom pb-2 mt-4 mb-3">B. Tes Gaya Belajar (VAK)</h5>
+
+      <div class="q-item">
+        <p class="mb-2 fw-semibold">1. Saat belajar materi baru, kamu lebih cepat paham jika:</p>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q_v1" value="V" required> <label class="form-check-label">Melihat gambar, grafik, video, atau demonstrasi visual.</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q_v1" value="A"> <label class="form-check-label">Mendengarkan penjelasan guru atau berdiskusi dengan teman.</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q_v1" value="K"> <label class="form-check-label">Mencoba mempraktikkan langsung secara fisik.</label>
+        </div>
+      </div>
+
+      <div class="q-item">
+        <p class="mb-2 fw-semibold">2. Ketika sedang menghafal pelajaran, cara terbaik kamu adalah:</p>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q_v2" value="V" required> <label class="form-check-label">Membaca catatan berkali-kali / membayangkan tulisan di buku.</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q_v2" value="A"> <label class="form-check-label">Membaca dengan suara nyaring atau diucapkan berulang kali.</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q_v2" value="K"> <label class="form-check-label">Menulis ulang rangkuman sambil berjalan/menggerakkan anggota tubuh.</label>
+        </div>
+      </div>
+
+      <div class="q-item">
+        <p class="mb-2 fw-semibold">3. Saat memiliki waktu luang, kamu paling senang:</p>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q_v3" value="V" required> <label class="form-check-label">Membaca buku/komik, menonton film, atau melihat-lihat media sosial.</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q_v3" value="A"> <label class="form-check-label">Mendengarkan musik, podcast, atau mengobrol dengan teman.</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q_v3" value="K"> <label class="form-check-label">Berolahraga, membuat kerajinan tangan, atau beraktivitas di luar.</label>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-success mt-4 w-100 py-3 fw-bold fs-6" onclick="prosesHitungDanSelesai()">
+        <i class="bi bi-check-circle"></i> Selesai & Lihat Hasil
+      </button>
+    </form>
+  </div>
+
+  <!-- STEP 3: LAPORAN HASIL -->
   <div id="sec-hasil" class="card shadow-sm p-4 mb-4 d-none">
     <div class="text-center mb-4">
       <i class="bi bi-award text-primary display-4"></i>
@@ -85,19 +206,19 @@
       </div>
     </div>
 
-    <!-- Deskripsi & Rekomendasi Karir (RIASEC) -->
+    <!-- Rekomendasi RIASEC -->
     <div class="box-riasec mb-3">
       <h6 class="text-primary fw-bold"><i class="bi bi-briefcase"></i> Rekomendasi Karir & Pekerjaan (RIASEC):</h6>
       <div id="detail-riasec-text"></div>
     </div>
 
-    <!-- Deskripsi & Panduan Strategi Belajar (VAK) -->
+    <!-- Panduan VAK -->
     <div class="box-vak mb-4">
       <h6 class="text-success fw-bold"><i class="bi bi-journal-check"></i> Panduan Strategi Belajar (VAK):</h6>
       <div id="detail-vak-text"></div>
     </div>
 
-    <!-- TOMBOL AKSI -->
+    <!-- Tombol Aksi -->
     <div class="d-flex flex-wrap gap-2 mt-3 no-print">
       <button class="btn btn-danger flex-fill py-2" onclick="window.print()">
         <i class="bi bi-printer"></i> Cetak / Simpan PDF
@@ -112,11 +233,12 @@
       </button>
     </div>
   </div>
+
 </div>
 
 <script>
   // GANTI DENGAN URL WEB APP GOOGLE APPS SCRIPT KAMU
-  const API_URL = "https://script.google.com/macros/s/AKfycbxIrp8cx1yPZHLdlO5IcFrRmpfDQwmnpTUywK5KkHyx5Js-MjPd2m91RkDJ-EyVHSAmLA/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbx.../exec";
 
   const MAP_RIASEC = {
     'R': { nama: 'Realistic (Praktis & Fisik)', deskripsi: 'Menyukai kegiatan praktis, merakit, memperbaiki mesin/alat, serta bekerja di luar ruangan.', karir: 'Teknisi/Mekanik, Insinyur Sipil, Arsitek, Pilot, Koki/Chef, Ahli Otomotif.' },
@@ -171,23 +293,50 @@
       return;
     }
 
-    // Simulasi hasil tes (Integrasikan variabel skor dengan perhitungan instrumen kamu)
+    // Pindah Tampilan ke Form Soal
+    document.getElementById('sec-identitas').classList.add('d-none');
+    document.getElementById('sec-soal').classList.remove('d-none');
+    window.scrollTo(0, 0);
+  }
+
+  function prosesHitungDanSelesai() {
+    const form = document.getElementById('formSoal');
+    if(!form.checkValidity()) {
+      alert('Harap jawab semua pertanyaan tes terlebih dahulu!');
+      form.reportValidity();
+      return;
+    }
+
+    let skorR = { R:0, I:0, A:0, S:0, E:0, C:0 };
+    let skorV = { V:0, A:0, K:0 };
+
+    const formData = new FormData(form);
+    for (let [key, val] of formData.entries()) {
+      if(skorR.hasOwnProperty(val)) skorR[val]++;
+      if(skorV.hasOwnProperty(val)) skorV[val]++;
+    }
+
+    // Cari Kategori Dominan
+    let domRIASEC = Object.keys(skorR).reduce((a, b) => skorR[a] >= skorR[b] ? a : b);
+    let domVAK = Object.keys(skorV).reduce((a, b) => skorV[a] >= skorV[b] ? a : b);
+
     hasilGlobal = {
       action: 'savePdfDrive',
       nama: state.nama,
       kelas: state.kelas,
-      kodeDominanRIASEC: 'R-E',
-      kodeDominanVAK: 'K',
-      skorRIASEC: { R: 4, I: 2, A: 1, S: 1, E: 2, C: 0 },
-      skorVAK: { V: 1, A: 2, K: 5 }
+      kodeDominanRIASEC: domRIASEC,
+      kodeDominanVAK: domVAK,
+      skorRIASEC: skorR,
+      skorVAK: skorV
     };
 
+    document.getElementById('sec-soal').classList.add('d-none');
     tampilkanHasil();
   }
 
   function tampilkanHasil() {
-    document.getElementById('sec-identitas').classList.add('d-none');
     document.getElementById('sec-hasil').classList.remove('d-none');
+    window.scrollTo(0, 0);
 
     document.getElementById('res-nama').innerText = hasilGlobal.nama;
     document.getElementById('res-kelas').innerText = hasilGlobal.kelas;
@@ -201,7 +350,7 @@
     document.getElementById('skor-vak-detail').innerHTML = 
       `Visual: ${hasilGlobal.skorVAK.V} | Auditori: ${hasilGlobal.skorVAK.A} | Kinestetik: ${hasilGlobal.skorVAK.K}`;
 
-    // Render Deskripsi RIASEC & VAK
+    // Render Rincian Deskripsi
     const kR = hasilGlobal.kodeDominanRIASEC.split('-')[0].trim();
     const infoR = MAP_RIASEC[kR] || MAP_RIASEC['R'];
     document.getElementById('detail-riasec-text').innerHTML = `
@@ -218,7 +367,7 @@
       <p class="small mb-0"><b>Strategi Belajar Terbaik:</b><br>${infoV.strategi}</p>
     `;
     
-    // Simpan otomatis data mentah ke Google Sheets
+    // Otomatis simpan data mentah ke Google Sheets
     fetch(API_URL, {
       method: 'POST',
       body: JSON.stringify({
